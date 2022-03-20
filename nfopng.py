@@ -5,7 +5,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-import chardet
 from PIL import Image, ImageDraw, ImageFont
 from rich import print
 
@@ -164,8 +163,11 @@ def main():
         with open(args.input, 'rb') as fd:
             nfo = fd.read()
 
-    encoding = chardet.detect(nfo)['encoding']
-    nfo = nfo.decode(encoding)
+    try:
+        nfo = nfo.decode('utf-8')
+    except UnicodeDecodeError:
+        nfo = nfo.decode('cp437')
+
     nfo = nfo.splitlines()
 
     width = (len(max(nfo, key=len)) * 8) + 8
