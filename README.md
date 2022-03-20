@@ -1,6 +1,6 @@
 # Installation
 ```sh
-https://github.com/pcroland/nfopng
+git clone https://github.com/pcroland/nfopng
 cd nfopng
 pip install -r requirements.txt
 ```
