@@ -5,6 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import chardet
 from PIL import Image, ImageDraw, ImageFont
 from rich import print
 
@@ -158,11 +159,14 @@ def main():
         chars_drw['■'] = square
 
     if args.input == '-':
-        sys.stdin.reconfigure(encoding='cp437')
-        nfo = sys.stdin.readlines()
+        nfo = sys.stdin.buffer.read()
     else:
-        with open(args.input, encoding='cp437') as fd:
-            nfo = fd.readlines()
+        with open(args.input, 'rb') as fd:
+            nfo = fd.read()
+
+    encoding = chardet.detect(nfo)['encoding']
+    nfo = nfo.decode(encoding)
+    nfo = nfo.splitlines()
 
     width = (len(max(nfo, key=len)) * 8) + 8
     height = (len(nfo) * 16) + 8
