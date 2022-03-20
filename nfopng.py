@@ -21,6 +21,8 @@ parser.add_argument('-v', '--version',
                     help='shows version.')
 parser.add_argument('-i', '--input',
                     help='NFO input file')
+parser.add_argument('-o', '--output',
+                    help='PNG output file\ndefault: input with .png suffix, or stdout if input is stdin')
 parser.add_argument('-min',
                     type=int,
                     default=30,
@@ -178,13 +180,19 @@ def main():
             x_pos += 8
         y_pos += 16
 
-    if args.input == '-':
+    if not args.output:
+        if args.input == '-':
+            args.output = '-'
+        else:
+            args.output = Path(args.input).with_suffix('.png')
+
+    if args.output == '-':
         if sys.stdout.isatty():
             print('WARNING: Not outputting to stdout because it is a terminal. Please redirect the output to a file.', file=sys.stdout)
             sys.exit(1)
         i.save(sys.stdout, 'png')
     else:
-        i.save(Path(args.input).with_suffix('.png'))
+        i.save(args.output)
 
 if __name__ == '__main__':
     main()
