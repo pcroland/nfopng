@@ -7,12 +7,15 @@ pip install -r requirements.txt
 # Usage
 ```ruby
 ❯ ./nfopng.py
-usage: nfopng.py [-h] [-v] [-i INPUT] [-min MIN] [-max MAX] [-b BORDER] [-dcb] [-dcl] [-f FONT] [-lf]
+usage: nfopng.py [-h] [-v] [-i INPUT] [-o OUTPUT] [-min MIN] [-max MAX]
+                 [-b BORDER] [-dcb] [-dcl] [-f FONT] [-lf]
 
 options:
   -h, --help                     shows this help message.
   -v, --version                  shows version.
   -i INPUT, --input INPUT        NFO input file
+  -o OUTPUT, --output OUTPUT     PNG output file
+                                 default: input with .png suffix, or stdout if input is stdin
   -min MIN                       minimum brightness
                                  default: 30
   -max MAX                       minimum brightness

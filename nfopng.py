@@ -3,6 +3,7 @@ import argparse
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 from rich import print
@@ -20,6 +21,8 @@ parser.add_argument('-v', '--version',
                     help='shows version.')
 parser.add_argument('-i', '--input',
                     help='NFO input file')
+parser.add_argument('-o', '--output',
+                    help='PNG output file\ndefault: input with .png suffix, or stdout if input is stdin')
 parser.add_argument('-min',
                     type=int,
                     default=30,
@@ -154,9 +157,12 @@ def main():
         chars_drw['│'] = line_vertical
         chars_drw['■'] = square
 
-    subprocess.run(['iconv', '-f', 'CP437', '-t', 'UTF-8', args.input, '-o', 'temp.txt'])
-    with open('temp.txt', 'r') as fl:
-        nfo = [line.rstrip() for line in fl]
+    if args.input == '-':
+        sys.stdin.reconfigure(encoding='cp437')
+        nfo = sys.stdin.readlines()
+    else:
+        with open(args.input, encoding='cp437') as fd:
+            nfo = fd.readlines()
 
     width = (len(max(nfo, key=len)) * 8) + 8
     height = (len(nfo) * 16) + 8
@@ -174,7 +180,19 @@ def main():
             x_pos += 8
         y_pos += 16
 
-    i.save('output.png')
+    if not args.output:
+        if args.input == '-':
+            args.output = '-'
+        else:
+            args.output = Path(args.input).with_suffix('.png')
+
+    if args.output == '-':
+        if sys.stdout.isatty():
+            print('WARNING: Not outputting to stdout because it is a terminal. Please redirect the output to a file.', file=sys.stdout)
+            sys.exit(1)
+        i.save(sys.stdout, 'png')
+    else:
+        i.save(args.output)
 
 if __name__ == '__main__':
     main()
