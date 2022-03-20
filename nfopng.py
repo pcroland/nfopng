@@ -168,7 +168,7 @@ def main():
     except UnicodeDecodeError:
         nfo = nfo.decode('cp437')
 
-    nfo = nfo.splitlines()
+    nfo = [x.rstrip() for x in nfo.splitlines()]
 
     width = (len(max(nfo, key=len)) * 8) + 8
     height = (len(nfo) * 16) + 8
