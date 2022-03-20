@@ -179,7 +179,10 @@ def main():
         y_pos += 16
 
     if args.input == '-':
-        i.save('output.png')
+        if sys.stdout.isatty():
+            print('WARNING: Not outputting to stdout because it is a terminal. Please redirect the output to a file.', file=sys.stdout)
+            sys.exit(1)
+        i.save(sys.stdout, 'png')
     else:
         i.save(Path(args.input).with_suffix('.png'))
 
