@@ -154,9 +154,12 @@ def main():
         chars_drw['│'] = line_vertical
         chars_drw['■'] = square
 
-    subprocess.run(['iconv', '-f', 'CP437', '-t', 'UTF-8', args.input, '-o', 'temp.txt'])
-    with open('temp.txt', 'r') as fl:
-        nfo = [line.rstrip() for line in fl]
+    if args.input == '-':
+        sys.stdin.reconfigure(encoding='cp437')
+        nfo = sys.stdin.readlines()
+    else:
+        with open(args.input, encoding='cp437') as fd:
+            nfo = fd.readlines()
 
     width = (len(max(nfo, key=len)) * 8) + 8
     height = (len(nfo) * 16) + 8
