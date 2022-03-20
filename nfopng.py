@@ -3,6 +3,7 @@ import argparse
 import os
 import subprocess
 import sys
+from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
 from rich import print
@@ -177,7 +178,10 @@ def main():
             x_pos += 8
         y_pos += 16
 
-    i.save('output.png')
+    if args.input == '-':
+        i.save('output.png')
+    else:
+        i.save(Path(args.input).with_suffix('.png'))
 
 if __name__ == '__main__':
     main()
