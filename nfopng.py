@@ -85,14 +85,23 @@ def main():
     else:
         base_font = ImageFont.truetype(f'fonts/{args.font}.ttf', 16)
     secondary_font = ImageFont.truetype('fonts/FiraCode.ttf', 13)
+    table_font = ImageFont.truetype('fonts/IBM_VGA.ttf', 16)
 
-    chars = '■┌┐└┘─│+-*,@/\.:()[]\'"=_abcdefghijklmnoöpqrstuüvwxyzABCDEFGHIJKLMNOÖPQRSTUÜVWXYZ0123456789░▒▓█▀▄▌▐'
+    chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ΦΦ¢£Ö∩░▒▓█▀▄▌▐■·≡«»≥≤⌐¬²÷½¼π±⌠⌡Ω¥Σ°√ⁿαßΓσµτδ∞φεÇçÑñÿƒ≈∙¡¿âäàáªåÄÅæÆêëèéÉîïìíôöòóºûüùúÜ/\\()\{\}[]\`\''
+    table_chars = '─═│║┌┐└┘├┤┴┬╔╗╚╝╠╣╩╦╒╕╘╛╞╡╧╤╓╖╙╜╟╢╨╥┼╬╪╫'
     chars_drw = {}
 
     for char in chars:
         letter = Image.new('RGB', (8, 16), color = c0)
         drw = ImageDraw.Draw(letter)
         drw.text((0, 0), char, fill=(max_bright, max_bright, max_bright), font=base_font)
+        chars_drw[char] = letter
+
+    for char in table_chars:
+        letter = Image.new('RGB', (8, 16), color = c0)
+        drw = ImageDraw.Draw(letter)
+        table_font = table_font if args.font == 'FiraCode' else base_font
+        drw.text((0, 0), char, fill=(max_bright, max_bright, max_bright), font=table_font)
         chars_drw[char] = letter
 
     if not args.disable_custom_blocks:
@@ -181,7 +190,7 @@ def main():
         x_pos = 4
         for char in line:
             if char == ' ': pass
-            elif char in chars: i.paste(chars_drw.get(char), (x_pos, y_pos))
+            elif char in chars + table_chars: i.paste(chars_drw.get(char), (x_pos, y_pos))
             else: d.text((x_pos, y_pos), char, fill=c4, font=secondary_font)
             x_pos += 8
         y_pos += 16
