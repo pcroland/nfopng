@@ -60,7 +60,9 @@ def main():
         parser.print_help(sys.stderr)
         sys.exit(1)
 
-    font_list = os.listdir('fonts')
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    fonts_dir = os.path.join(current_dir, 'fonts')
+    font_list = os.listdir(fonts_dir)
     font_list = [os.path.splitext(font)[0] for font in font_list]
 
     if args.list_fonts:
@@ -81,13 +83,13 @@ def main():
         sys.exit(1)
 
     if args.font == 'FiraCode':
-        base_font = ImageFont.truetype(f'fonts/{args.font}.ttf', 13)
+        base_font = ImageFont.truetype(os.path.join(fonts_dir, f"{args.font}.ttf"), 13)
     else:
-        base_font = ImageFont.truetype(f'fonts/{args.font}.ttf', 16)
-    secondary_font = ImageFont.truetype('fonts/FiraCode.ttf', 13)
-    table_font = ImageFont.truetype('fonts/IBM_VGA.ttf', 16)
+        base_font = ImageFont.truetype(os.path.join(fonts_dir, f"{args.font}.ttf"), 16)
+    secondary_font = ImageFont.truetype(os.path.join(fonts_dir, "FiraCode.ttf"), 13)
+    table_font = ImageFont.truetype(os.path.join(fonts_dir, "IBM_VGA.ttf"), 16)
 
-    chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ΦΦ¢£Ö∩░▒▓█▀▄▌▐■·≡«»≥≤⌐¬²÷½¼π±⌠⌡Ω¥Σ°√ⁿαßΓσµτδ∞φεÇçÑñÿƒ≈∙¡¿âäàáªåÄÅæÆêëèéÉîïìíôöòóºûüùúÜ/\\()\{\}[]\`\''
+    chars = r'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ΦΦ¢£Ö∩░▒▓█▀▄▌▐■·≡«»≥≤⌐¬²÷½¼π±⌠⌡Ω¥Σ°√ⁿαßΓσµτδ∞φεÇçÑñÿƒ≈∙¡¿âäàáªåÄÅæÆêëèéÉîïìíôöòóºûüùúÜ/\\()\{\}[]\`\''
     table_chars = '─═│║┌┐└┘├┤┴┬╔╗╚╝╠╣╩╦╒╕╘╛╞╡╧╤╓╖╙╜╟╢╨╥┼╬╪╫'
     chars_drw = {}
 
