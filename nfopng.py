@@ -5,7 +5,7 @@ import re
 import sys
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 from rich import print
 
 parser = argparse.ArgumentParser(
@@ -83,46 +83,46 @@ def main():
         sys.exit(1)
 
     if args.font == 'FiraCode':
-        base_font = ImageFont.truetype(os.path.join(fonts_dir, f"{args.font}.ttf"), 13)
+        base_font = ImageFont.truetype(os.path.join(fonts_dir, f"{args.font}.ttf"), 26)
     else:
-        base_font = ImageFont.truetype(os.path.join(fonts_dir, f"{args.font}.ttf"), 16)
-    secondary_font = ImageFont.truetype(os.path.join(fonts_dir, "FiraCode.ttf"), 13)
-    table_font = ImageFont.truetype(os.path.join(fonts_dir, "IBM_VGA.ttf"), 16)
+        base_font = ImageFont.truetype(os.path.join(fonts_dir, f"{args.font}.ttf"), 32)
+    secondary_font = ImageFont.truetype(os.path.join(fonts_dir, "FiraCode.ttf"), 26)
+    table_font = ImageFont.truetype(os.path.join(fonts_dir, "IBM_VGA.ttf"), 32)
 
     chars = r'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ΦΦ¢£Ö∩░▒▓█▀▄▌▐■·≡«»≥≤⌐¬²÷½¼π±⌠⌡Ω¥Σ°√ⁿαßΓσµτδ∞φεÇçÑñÿƒ≈∙¡¿âäàáªåÄÅæÆêëèéÉîïìíôöòóºûüùúÜ/\\()\{\}[]\`\''
     table_chars = '─═│║┌┐└┘├┤┴┬╔╗╚╝╠╣╩╦╒╕╘╛╞╡╧╤╓╖╙╜╟╢╨╥┼╬╪╫'
     chars_drw = {}
 
     for char in chars:
-        letter = Image.new('RGB', (8, 16), color = c0)
+        letter = Image.new('RGB', (16, 32), color = c0)
         drw = ImageDraw.Draw(letter)
         drw.text((0, 0), char, fill=(max_bright, max_bright, max_bright), font=base_font)
         chars_drw[char] = letter
 
     for char in table_chars:
-        letter = Image.new('RGB', (8, 16), color = c0)
+        letter = Image.new('RGB', (16, 32), color = c0)
         drw = ImageDraw.Draw(letter)
         table_font = table_font if args.font == 'FiraCode' else base_font
         drw.text((0, 0), char, fill=(max_bright, max_bright, max_bright), font=table_font)
         chars_drw[char] = letter
 
     if not args.disable_custom_blocks:
-        shade1 = Image.new('RGB', (8, 16), color = c1)
-        shade2 = Image.new('RGB', (8, 16), color = c2)
-        shade3 = Image.new('RGB', (8, 16), color = c3)
-        shade4 = Image.new('RGB', (8, 16), color = c4)
+        shade1 = Image.new('RGB', (16, 32), color = c1)
+        shade2 = Image.new('RGB', (16, 32), color = c2)
+        shade3 = Image.new('RGB', (16, 32), color = c3)
+        shade4 = Image.new('RGB', (16, 32), color = c4)
 
-        vertical_half = Image.new('RGB', (4, 16), color = c4)
-        half_left = Image.new('RGB', (8, 16), color = c0)
+        vertical_half = Image.new('RGB', (8, 32), color = c4)
+        half_left = Image.new('RGB', (16, 32), color = c0)
         half_left.paste(vertical_half, (0, 0))
-        half_right = Image.new('RGB', (8, 16), color = c0)
-        half_right.paste(vertical_half, (4, 0))
+        half_right = Image.new('RGB', (16, 32), color = c0)
+        half_right.paste(vertical_half, (8, 0))
 
-        horizontal_half = Image.new('RGB', (8, 8), color = c4)
-        half_upper = Image.new('RGB', (8, 16), color = c0)
+        horizontal_half = Image.new('RGB', (16, 16), color = c4)
+        half_upper = Image.new('RGB', (16, 32), color = c0)
         half_upper.paste(horizontal_half, (0, 0))
-        half_lower = Image.new('RGB', (8, 16), color = c0)
-        half_lower.paste(horizontal_half, (0, 8))
+        half_lower = Image.new('RGB', (16, 32), color = c0)
+        half_lower.paste(horizontal_half, (0, 16))
         chars_drw['░'] = shade1
         chars_drw['▒'] = shade2
         chars_drw['▓'] = shade3
@@ -133,32 +133,32 @@ def main():
         chars_drw['▐'] = half_right
 
     if not args.disable_custom_lines:
-        line_h = Image.new('RGB', (8, 2), color = c4)
-        line_h_half = Image.new('RGB', (5, 2), color = c4)
-        line_v = Image.new('RGB', (2, 16), color = c4)
-        line_v_half = Image.new('RGB', (2, 9), color = c4)
+        line_h = Image.new('RGB', (18, 4), color = c4)
+        line_h_half = Image.new('RGB', (10, 4), color = c4)
+        line_v = Image.new('RGB', (4, 32), color = c4)
+        line_v_half = Image.new('RGB', (4, 18), color = c4)
 
-        line_horizontal = Image.new('RGB', (8, 16), color = c0)
-        line_horizontal.paste(line_h, (0, 7))
-        line_vertical = Image.new('RGB', (8, 16), color = c0)
-        line_vertical.paste(line_v, (3, 0))
+        line_horizontal = Image.new('RGB', (16, 32), color = c0)
+        line_horizontal.paste(line_h, (0, 14))
+        line_vertical = Image.new('RGB', (16, 32), color = c0)
+        line_vertical.paste(line_v, (6, 0))
 
-        corner_upper_left = Image.new('RGB', (8, 16), color = c0)
-        corner_upper_left.paste(line_v_half, (3, 7))
-        corner_upper_left.paste(line_h_half, (3, 7))
-        corner_upper_right = Image.new('RGB', (8, 16), color = c0)
-        corner_upper_right.paste(line_v_half, (3, 7))
-        corner_upper_right.paste(line_h_half, (0, 7))
-        corner_lower_left = Image.new('RGB', (8, 16), color = c0)
-        corner_lower_left.paste(line_v_half, (3, 0))
-        corner_lower_left.paste(line_h_half, (3, 7))
-        corner_lower_right = Image.new('RGB', (8, 16), color = c0)
-        corner_lower_right.paste(line_v_half, (3, 0))
-        corner_lower_right.paste(line_h_half, (0, 7))
+        corner_upper_left = Image.new('RGB', (16, 32), color = c0)
+        corner_upper_left.paste(line_v_half, (6, 15))
+        corner_upper_left.paste(line_h_half, (6, 14))
+        corner_upper_right = Image.new('RGB', (16, 32), color = c0)
+        corner_upper_right.paste(line_v_half, (6, 15))
+        corner_upper_right.paste(line_h_half, (0, 14))
+        corner_lower_left = Image.new('RGB', (16, 32), color = c0)
+        corner_lower_left.paste(line_v_half, (6, 0))
+        corner_lower_left.paste(line_h_half, (6, 14))
+        corner_lower_right = Image.new('RGB', (15, 32), color = c0)
+        corner_lower_right.paste(line_v_half, (6, 0))
+        corner_lower_right.paste(line_h_half, (0, 14))
 
-        square_a = Image.new('RGB', (6, 6), color = c4)
-        square = Image.new('RGB', (8, 16), color = c0)
-        square.paste(square_a, (1, 5))
+        square_a = Image.new('RGB', (12, 12), color = c4)
+        square = Image.new('RGB', (16, 32), color = c0)
+        square.paste(square_a, (2, 10))
 
         chars_drw['┌'] = corner_upper_left
         chars_drw['┐'] = corner_upper_right
@@ -183,21 +183,22 @@ def main():
     nfo = nfo.rstrip()
     nfo = [x.rstrip() for x in nfo.splitlines()]
 
-    width = (len(max(nfo, key=len)) * 8) + 8
-    height = (len(nfo) * 16) + 8
+    width = len(max(nfo, key=len)) * 16
+    height = len(nfo) * 32
 
     i = Image.new('RGB', (width, height), color = c0)
     d = ImageDraw.Draw(i)
 
-    y_pos = 4
+    y_pos = 0
     for line in nfo:
-        x_pos = 4
+        x_pos = 0
         for char in line:
             if char == ' ': pass
             elif char in chars + table_chars: i.paste(chars_drw.get(char), (x_pos, y_pos))
             else: d.text((x_pos, y_pos), char, fill=c4, font=secondary_font)
-            x_pos += 8
-        y_pos += 16
+            x_pos += 16
+        y_pos += 32
+    i = ImageOps.expand(i, border=8, fill=c0)
 
     if not args.output:
         if args.input == '-':
