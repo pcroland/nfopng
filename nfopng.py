@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import os
-import subprocess
+import re
 import sys
 from pathlib import Path
 
@@ -179,6 +179,8 @@ def main():
     except UnicodeDecodeError:
         nfo = nfo.decode('cp437')
 
+    nfo = re.sub(r"^\s*\n", "", nfo)
+    nfo = nfo.rstrip()
     nfo = [x.rstrip() for x in nfo.splitlines()]
 
     width = (len(max(nfo, key=len)) * 8) + 8
